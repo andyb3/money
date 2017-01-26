@@ -5,3 +5,4 @@ class OFX_Form(forms.ModelForm):
     class Meta:
         model = Uploaded_File
         fields = ('file_location', )
+        labels = {'file_location': 'Choose OFX file'}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from transactions.ofxImport import ofxData
-from transactions.forms import OFX_Form
+from transactions.forms import OFX_Form, TX_History
 from transactions.models import Account, OFX_Upload, Transaction, Transaction_Type
 
 def index(request):
@@ -15,6 +15,8 @@ def ofxupload(request):
             upload_file_pk = f.pk #Get primary key of uploaded file record
             file_path = f.file_location.path #Get full file path of uploaded file
             data = ofxData(file_path) #Create ofxData object
+            if data.strip_head() == 'error': #if necessary, trims the header from OFX file (e.g. Natwest file)
+                return redirect(reverse('transactions:ofxupload_submission', kwargs={'success_code': 2}))
             statementDetails = data.statementDetails() #returns dictionary of statement level details, or 'error'
             if statementDetails == 'error':
                 return redirect(reverse('transactions:ofxupload_submission', kwargs={'success_code': 2}))
@@ -49,9 +51,11 @@ def ofxupload(request):
                                              balance=tx['balance']
                                              )
             #update account balance: select top 1 when transactions for that account ordered by date then pk
-            latest_tx = Transaction.objects.filter(account=a).order_by('-date', '-pk')[0]
-            a.balance = latest_tx.balance
-            a.save()
+            #To get top 1 result, use slice rather than index to prevent index error if there's no transactions
+            latest_tx = Transaction.objects.filter(account=a).order_by('-date', '-pk')[:1]
+            if latest_tx: #If query_set contains a result...
+                a.balance = latest_tx.balance
+                a.save()
             return redirect(reverse('transactions:ofxupload_submission', kwargs={'success_code': 1}))
     else:
         form = OFX_Form()
@@ -64,5 +68,15 @@ def ofxupload_submission(request, success_code):
         message = "WARNING: Error occurred when importing OFX file."
     return render(request, 'transactions/ofxupload_submission.html', {'message': message})
 
+def select_tx(request):
+    form = TX_History()
+    return render(request, 'transactions/select_tx.html', {'form': form,})
+
 def view_tx(request):
+    if request.method == 'POST':
+        form = TX_History(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data["start_date"]
+            return render(request, 'transactions/view_tx.html', {'name': start_date,})
+    #Change this to return a 404
     return render(request, 'transactions/view_tx.html')

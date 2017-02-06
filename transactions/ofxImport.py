@@ -6,6 +6,21 @@ class ofxData(object):
     '''Imports data from OFX file for money Django app'''
     def __init__(self, ofxPath):
         self.ofxPath = ofxPath
+    def strip_head(self):
+        try:
+            strip_head = ""
+            with open(self.ofxPath, 'r') as f:
+                line = f.readline()
+                while line and not line.lstrip().startswith('<'):
+                    line = f.readline()
+                while line:
+                    strip_head += line
+                    line = f.readline()
+            with open(self.ofxPath, 'w') as f:
+                f.write(strip_head)
+            return
+        except:
+            return "error"
     def statementDetails(self):
         try:
             tree = etree.parse(self.ofxPath)

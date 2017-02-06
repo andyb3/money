@@ -77,6 +77,7 @@ def view_tx(request):
         form = TX_History(request.POST)
         if form.is_valid():
             start_date = form.cleaned_data["start_date"]
+            end_date = form.cleaned_data["end_date"]
             return render(request, 'transactions/view_tx.html', {'name': start_date,})
     #Change this to return a 404
     return render(request, 'transactions/view_tx.html')

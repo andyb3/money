@@ -3,6 +3,7 @@ from django.urls import reverse
 from transactions.ofxImport import ofxData
 from transactions.forms import OFX_Form, TX_History
 from transactions.models import Account, OFX_Upload, Transaction, Transaction_Type
+from decimal import Decimal
 
 def index(request):
     return render(request, 'transactions/index.html')
@@ -80,6 +81,23 @@ def view_tx(request):
             end_date = form.cleaned_data["end_date"]
             #Creates a list of Account objects from selected accounts.
             accounts = [a for a in Account.objects.all() if form.cleaned_data[str(a.pk)]]
-            return render(request, 'transactions/view_tx.html', {'name': start_date,})
+            start_bal = Decimal(0)
+            end_bal = Decimal(0)
+            for a in accounts:
+                t = Transaction.objects.filter(account=a).order_by('-date', '-pk')
+                a_start_bal = t.filter(date__lt=start_date)[:1]
+                a_end_bal = t.filter(date__lte=end_date)[:1]
+                if a_start_bal:
+                    start_bal += a_start_bal[0].balance
+                if a_end_bal:
+                    end_bal += a_end_bal[0].balance
+            total_change = end_bal - start_bal
+            context = {'start_date': start_date,
+                       'end_date': end_date,
+                       'start_bal': start_bal,
+                       'end_bal': end_bal,
+                       'total_change': total_change,
+                       }
+            return render(request, 'transactions/view_tx.html', context)
     #Change this to return a 404
     return render(request, 'transactions/view_tx.html')

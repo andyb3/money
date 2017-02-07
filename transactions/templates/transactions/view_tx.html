@@ -1,2 +1,10 @@
-{{ name }}
+<p>
+  Period start: {{ start_date }}</br>
+  Start balance: {{ start_bal }}
+</p>
+<p>
+  Period end: {{ end_date }}</br>
+  End balance: {{ end_bal }}
+</p>
+<p>Total change: {{ total_change }}</p>
 </br><a href={% url 'transactions:index' %}>Back to index</a>

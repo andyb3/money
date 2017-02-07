@@ -74,10 +74,12 @@ def select_tx(request):
 
 def view_tx(request):
     if request.method == 'POST':
-        form = TX_History(request.POST)
+        form = TX_History(request.POST) #Create new instance of form with the posted data
         if form.is_valid():
             start_date = form.cleaned_data["start_date"]
             end_date = form.cleaned_data["end_date"]
+            #Creates a list of Account objects from selected accounts.
+            accounts = [a for a in Account.objects.all() if form.cleaned_data[str(a.pk)]]
             return render(request, 'transactions/view_tx.html', {'name': start_date,})
     #Change this to return a 404
     return render(request, 'transactions/view_tx.html')

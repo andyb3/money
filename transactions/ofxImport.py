@@ -60,12 +60,3 @@ class ofxData(object):
             return lstTrans
         except:
             return "error"
-
-if __name__ == '__main__':
-    filepath = '/home/andy/Downloads/Statement Download 2017-Jan-09 21-10-09.ofx'
-    o = ofxData(filepath)
-    transDets = o.transDetails()
-    if transDets == "error":
-        print("ERRROOOOORRRR")
-    else:
-        print("NOOOOOOOOOOOO err")

@@ -1,12 +1,18 @@
 from django import forms
-from transactions.models import Uploaded_File
-from transactions.models import Account
+from transactions.models import Uploaded_File, Transaction, Account
 
 class OFX_Form(forms.ModelForm):
     class Meta:
         model = Uploaded_File
         fields = ('file_location', ) #Uses file_location field from the Uploaded_File model
         labels = {'file_location': 'Choose OFX file'}
+
+class TX_Add(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ('account', 'tx_type', 'date', 'description', 'amount')
+        labels = {'tx_type': 'Type'}
+        widgets = {'date': forms.TextInput(attrs={'class':'datepicker'})}
 
 class TX_History(forms.Form):
     start_date = forms.DateField(label="Period start", widget=forms.TextInput(attrs={'class':'datepicker'}))

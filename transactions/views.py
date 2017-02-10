@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth import views
+from django.contrib.auth.decorators import login_required
 from transactions.ofxImport import ofxData
 from transactions.forms import OFX_Form, TX_History, TX_Add
 from transactions.models import Account, OFX_Upload, Transaction, Transaction_Type
 from decimal import Decimal
 
+@login_required
 def index(request):
     return render(request, 'transactions/index.html')
 
+@login_required
 def ofxupload(request):
     if request.method == 'POST': #if user has submitted a file
         form = OFX_Form(request.POST, request.FILES) #Pass posted file to form object
@@ -62,6 +66,7 @@ def ofxupload(request):
         form = OFX_Form()
         return render(request, 'transactions/ofxupload.html', {'form': form,})
 
+@login_required
 def submission(request, message_code):
     if message_code == '1':
         message = "OFX file imported successfully"
@@ -71,6 +76,7 @@ def submission(request, message_code):
         message = "Transaction added"
     return render(request, 'transactions/index.html', {'message': message})
 
+@login_required
 def add_tx(request):
     if request.method == 'POST':
         form = TX_Add(request.POST)
@@ -114,10 +120,12 @@ def add_tx(request):
         form = TX_Add()
         return render(request, 'transactions/add_tx.html', {'form': form,})
 
+@login_required
 def select_tx(request):
     form = TX_History()
     return render(request, 'transactions/select_tx.html', {'form': form,})
 
+@login_required
 def view_tx(request):
     if request.method == 'POST':
         form = TX_History(request.POST) #Create new instance of form with the posted data

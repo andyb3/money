@@ -22,4 +22,4 @@ class TX_History(forms.Form):
         super(TX_History, self).__init__(*args, **kwargs)
         for account in Account.objects.all():
             #Have to convert primary key to string to use as field name, otherwise field always returns 'false'
-            self.fields[str(account.pk)] = forms.BooleanField(label=account.description, required=False)
+            self.fields[str(account.pk)] = forms.BooleanField(label=account.description, required=False, initial=True)

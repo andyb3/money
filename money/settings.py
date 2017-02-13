@@ -25,7 +25,7 @@ SECRET_KEY = '0uote((zf6elx3@c&yqc6ib(ft!3x18-j^i7exw)niya+0xlb7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','andy-ubuntu']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'transactions.apps.TransactionsConfig',
+    'widget_tweaks', # Installed django-widget-tweaks so widgets can be adjusted in template https://pypi.python.org/pypi/django-widget-tweaks
 ]
 
 MIDDLEWARE = [
@@ -127,6 +128,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
-#User login
+#User login and sessions
 LOGIN_URL = '/transactions/login/'
 LOGIN_REDIRECT_URL = '/transactions/'
+SESSION_COOKIE_AGE = 3600 #Session cookies expire after an hour
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Session cookies expire when browser is closed

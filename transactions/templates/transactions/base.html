@@ -17,6 +17,9 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type= "text/css" href="{% static 'transactions/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" />
 
+    <!-- Bootstrap signin CSS -->
+    <link rel="stylesheet" type= "text/css" href="{% static 'transactions/bootstrap-3.3.7-dist/css/signin.css' %}" />
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link rel="stylesheet" type= "text/css" href="{% static 'transactions/bootstrap-3.3.7-dist/css/ie10-viewport-bug-workaround.css' %}" />
 
@@ -45,6 +48,8 @@
 .en-markup-crop-options div div:first-of-type {
     margin-left: 0px !important;
 }
+
+
 </style></head>
 
   <body>
@@ -55,8 +60,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-
-    <link rel="stylesheet" type= "text/css" href="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.css' %}" />
+    <script src="{% static 'transactions/jquery-1.12.1.min.js' %}"></script>
     <script src="{% static 'transactions/jquery-ui-1.12.1.custom/external/jquery/jquery.js' %}"></script>
     <script src="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
     <script>
@@ -64,6 +68,7 @@
         $('.datepicker').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});
     });
     </script>
+    <link rel="stylesheet" type= "text/css" href="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.css' %}" />
 
 
     <!--script src="./Fixed Top Navbar Example for Bootstrap_files/jquery.min.js"></script-->

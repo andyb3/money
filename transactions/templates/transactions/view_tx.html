@@ -1,6 +1,7 @@
 {% extends 'transactions/base.html' %}
 
 {% block content %}
+{% load static %}
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -11,6 +12,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <a class="navbar-left"><img style="max-height:40px;padding-top:5px;padding-right:10px" src = "{% static 'transactions/piggy_bank.png' %}"></a>
           <a class="navbar-brand" href={% url 'transactions:index' %}>Andy's Money</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -32,29 +34,28 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container" style='max-width:800px;margin:0 auto'>
 
       <!-- Main component for a primary marketing message or call to action -->
 
-        <h3>Spending Summary</h3>
-
         <table class=table>
+        <caption><h3>Spending Summary</h3></caption>
         <tr>
-          <td>Period start:</td>
+          <td><b>Period start</b></td>
           <td>{{ start_date }}</td>
-          <td>Start balance:</td>
+          <td><b>Start balance</b></td>
           <td>£{{ start_bal }}</td>
         </tr>
         <tr>
-          <td>Period end:</td>
+          <td><b>Period end</b></td>
           <td>{{ end_date }}</td>
-          <td>End balance:</td>
+          <td><b>End balance</b></td>
           <td>£{{ end_bal }}</td>
         </tr>
         <tr>
           <td></td>
           <td></td>
-          <td>Total change:</td>
+          <td><b>Total change</b></td>
           <td>£{{ total_change }}</td>
         </tr>
         </table>

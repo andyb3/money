@@ -1,6 +1,7 @@
 {% extends 'transactions/base.html' %}
 
 {% block content %}
+{% load static %}
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -11,6 +12,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <a class="navbar-left"><img style="max-height:40px;padding-top:5px;padding-right:10px" src = "{% static 'transactions/piggy_bank.png' %}"></a>
           <a class="navbar-brand" href={% url 'transactions:index' %}>Andy's Money</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -32,7 +34,7 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container" style='max-width:800px;margin:0 auto'>
 
       <!-- Main component for a primary marketing message or call to action -->
 
@@ -48,26 +50,5 @@
 
     </div> <!-- /container -->
 
+
 {% endblock %}
-
-
-
-
-
-{% load static %}
-<link rel="stylesheet" type= "text/css" href="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.css' %}" />
-<script src="{% static 'transactions/jquery-ui-1.12.1.custom/external/jquery/jquery.js' %}"></script>
-<script src="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
-<script>
-$(document).ready(function() {
-    $('.datepicker').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});
-});
-</script>
-
-<form method="post">
-  {% csrf_token %}
-  {{form.as_p}}
-  <input type="submit" value="Submit" />
-</form>
-</br><a href={% url 'transactions:index' %}>Back to index</a>
-</br><a href={% url 'transactions:logout' %}>Logout</a>

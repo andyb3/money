@@ -13,7 +13,9 @@ class TX_Add(forms.ModelForm):
         model = Transaction
         fields = ('account', 'tx_type', 'date', 'description', 'amount')
         labels = {'tx_type': 'Type'}
-        widgets = {'date': forms.TextInput(attrs={'class':'datepicker','autocomplete':'off'})}
+        widgets = {'date': forms.TextInput(attrs={'class':'datepicker','autocomplete':'off'}),
+                   'account': forms.Select(attrs={'class':'form-control'}),
+                   'tx_type': forms.Select(attrs={'class':'form-control'})}
 
 class TX_History(forms.Form):
     start_date = forms.DateField(label_suffix="",label="Period start", widget=forms.TextInput(attrs={'class':'datepicker','autocomplete':'off'}))

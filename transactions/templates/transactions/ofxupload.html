@@ -39,20 +39,19 @@
 
       <!-- Main component for a primary marketing message or call to action -->
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" class="form-inline">
           {% csrf_token %}
-          <table class=table style='border:0px'>
-          <caption><h3>Select OFX File for Upload</h3></caption>
-          <tr><td>
+          <h3 class='text-muted'>Upload OFX File</h3>
+          <div class="form-group">
           <div class="input-group">
                <label class="input-group-btn">
                    <span class="btn btn-default">
-                       Browse {% render_field form.file_location style="display: none" %}
+                       Browse {% render_field form.file_location class="form-control" style="display: none" %}
                    </span>
                </label>
                <input type="text" class="form-control" readonly>
            </div>
-          </table>
+         </div>
           <button class='btn btn-default' type="submit">Import</button>
         </form>
 

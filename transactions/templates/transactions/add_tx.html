@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+{% load widget_tweaks %}
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -34,18 +35,37 @@
       </div>
     </nav>
 
-    <div class="container" style='max-width:800px;margin:0 auto'>
+    <div class="container" style='max-width:400px;margin:0 auto'>
 
       <!-- Main component for a primary marketing message or call to action -->
 
-        <h3>Select Dates and Accounts</h3>
+
 
         <form method="post">
+          <h3 class='text-muted'>Add Transaction</h3>
           {% csrf_token %}
-          <table class=table>
-          {{form.as_table}}
-          </table>
-          <input class='btn' type="submit" value="Submit" />
+          <div class="form-group">
+          <label for="account">{% render_field form.account.label %}</label>
+          {% render_field form.account %}
+          </div>
+          <div class="form-group">
+          <label for="tx_type">{% render_field form.tx_type.label %}</label>
+          {% render_field form.tx_type %}
+          </div>
+          <div class="form-group">
+          <label for="date">{% render_field form.date.label %}</label>
+          {% render_field form.date class="datepicker form-control" %}
+          </div>
+          <div class="form-group">
+          <label for="description">{% render_field form.description.label %}</label>
+          {% render_field form.description class="form-control" %}
+          </div>
+          <div class="form-group">
+          <label for="amount">{% render_field form.amount.label %}</label>
+          {% render_field form.amount class="form-control"%}
+          </div>
+
+          <input class='btn btn-default' type="submit" value="Submit" />
         </form>
 
     </div> <!-- /container -->

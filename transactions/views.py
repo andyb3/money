@@ -133,7 +133,7 @@ def view_tx(request):
             start_date = form.cleaned_data["start_date"]
             end_date = form.cleaned_data["end_date"]
             #Creates a list of Account objects from selected accounts.
-            accounts = [a for a in Account.objects.all() if form.cleaned_data[str(a.pk)]]
+            accounts = [a for a in Account.objects.all() if form.cleaned_data['acct'+str(a.pk)]]
             start_bal = Decimal(0) #Initialise start and end balances
             end_bal = Decimal(0)
             for a in accounts:

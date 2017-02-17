@@ -23,6 +23,12 @@ class TX_History(forms.Form):
     #Number of account fields varies, so have to loop and directly add to parent's self.fields attribute
     def __init__(self, *args, **kwargs):
         super(TX_History, self).__init__(*args, **kwargs)
-        for account in Account.objects.all():
+        for account in Account.objects.all().order_by('bank'):
             #Have to convert primary key to string to use as field name, otherwise field always returns 'false'
-            self.fields['acct'+str(account.pk)] = forms.BooleanField(label=account.description, required=False, initial=True)
+            self.fields['acct'+str(account.pk)] = forms.BooleanField(label=account.bank.bank_name + ": " + account.description, required=False, initial=True)
+    def clean(self):
+        cleaned_data = super(TX_History, self).clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+        if not end_date >= start_date:
+            raise forms.ValidationError("End date cannot be before start date")

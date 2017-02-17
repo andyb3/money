@@ -9,7 +9,15 @@ from decimal import Decimal
 
 @login_required
 def index(request):
-    return render(request, 'transactions/index.html')
+    acct_data=[('Bank', 'Account', 'Last Transaction Date', 'Balance')]
+    accounts=Account.objects.all().order_by('bank')
+    for a in accounts:
+        tx_date = None
+        latest_tx = Transaction.objects.filter(account=a).order_by('-date', '-pk')[:1]
+        if latest_tx:
+            tx_date = latest_tx[0].date
+        acct_data.append((a.bank.bank_name, a.description, tx_date, "£"+str(a.balance)))
+    return render(request, 'transactions/index.html', {'acct_data':acct_data})
 
 @login_required
 def ofxupload(request):
@@ -74,7 +82,7 @@ def submission(request, message_code):
         message = "WARNING: Error occurred when importing OFX file"
     elif message_code == '3':
         message = "Transaction added"
-    return render(request, 'transactions/index.html', {'message': message})
+    return render(request, 'transactions/message.html', {'message': message})
 
 @login_required
 def add_tx(request):
@@ -157,5 +165,4 @@ def view_tx(request):
                        'total_change': total_change,
                        }
             return render(request, 'transactions/view_tx.html', context)
-    #Change this to return a 404
-    return render(request, 'transactions/view_tx.html')
+    return redirect(reverse('transactions:select_tx'))

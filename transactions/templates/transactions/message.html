@@ -18,7 +18,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class='active'><a href={% url 'transactions:index' %}>Home</a></li>
+            <li><a href={% url 'transactions:index' %}>Home</a></li>
             <li><a href="{% url 'transactions:select_tx' %}">Spending History</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add Transactions <span class="caret"></span></a>
@@ -35,27 +35,12 @@
       </div>
     </nav>
 
-    <div class="container" style='max-width:800px;margin:0 auto'>
+    <div class="container">
 
       <!-- Main component for a primary marketing message or call to action -->
+      <p class="text-center"><b>{{ message }}</b></p>
 
-        <table class="table table-hover">
-        <caption><h3 class="text-muted">Account Summary</h3></caption>
-          {% for a in acct_data|slice:":1" %}
-          <tr>
-            {% for field in a %}
-            <th>{{field}}<th>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        {% for a in acct_data|slice:"1:" %}
-        <tr>
-          {% for field in a %}
-          <td>{{field}}<td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
+
 
 
     </div> <!-- /container -->

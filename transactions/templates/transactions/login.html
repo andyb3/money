@@ -19,7 +19,9 @@
         {% csrf_token %}
           <h3 class="form-signin-heading">Please login</h3>
           {% if form.errors %}
+          <div class="alert alert-warning">
           <p>Username and password don't match.</p>
+          </div>
           {% endif %}
           <label for="username" class="sr-only">  {% render_field form.username.label %} </label>
         {% render_field form.username class="form-control" placeholder='Username' autocomplete='off'%}

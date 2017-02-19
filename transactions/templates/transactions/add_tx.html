@@ -19,7 +19,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href={% url 'transactions:index' %}>Home</a></li>
-            <li><a href="{% url 'transactions:select_tx' %}">Spending History</a></li>
+            <li><a href="{% url 'transactions:view_tx' %}">Spending History</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add Transactions <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -44,6 +44,11 @@
         <form method="post">
           <h3 class='text-muted'>Add Transaction</h3>
           <hr style='border-color:#A9A9A9'/>
+          {% if form.non_field_errors %}
+          <div class="alert alert-warning">
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
           {% csrf_token %}
           <div class="form-group">
           <label for="account">{% render_field form.account.label %}</label>
@@ -57,10 +62,20 @@
           <label for="date">{% render_field form.date.label %}</label>
           {% render_field form.date class="datepicker form-control" %}
           </div>
+          {% if form.date.errors %}
+          <div class="alert alert-warning">
+            {{ form.date.errors }}
+          </div>
+          {% endif %}
           <div class="form-group">
           <label for="description">{% render_field form.description.label %}</label>
           {% render_field form.description class="form-control" %}
           </div>
+          {% if form.description.errors %}
+          <div class="alert alert-warning">
+            {{ form.description.errors }}
+          </div>
+          {% endif %}
           <div class="form-group">
           <label for="amount">{% render_field form.amount.label %}</label>
           <div class="input-group">
@@ -68,6 +83,11 @@
           {% render_field form.amount class="form-control" placeholder="0.00" style='z-index:0' %}
           </div>
         </div>
+        {% if form.amount.errors %}
+        <div class="alert alert-warning">
+          {{ form.amount.errors }}
+        </div>
+        {% endif %}
           <input class='btn btn-default' type="submit" value="Submit" />
         </form>
 

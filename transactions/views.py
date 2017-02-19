@@ -29,14 +29,17 @@ def ofxupload(request):
             file_path = f.file_location.path #Get full file path of uploaded file
             data = ofxData(file_path) #Create ofxData object
             if data.strip_head() == 'error': #if necessary, trims the header from OFX file (e.g. Natwest file)
-                return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
+                error_message = "An error occured during import. Please check file is in OFX format."
+                return render(request, 'transactions/ofxupload.html', {'form': form, 'error_message': error_message})
             statementDetails = data.statementDetails() #returns dictionary of statement level details, or 'error'
             if statementDetails == 'error':
-                return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
-            #returns list of account that match the account ID in OFX
+                error_message = "An error occured during import. Please check file is in OFX format."
+                return render(request, 'transactions/ofxupload.html', {'form': form, 'error_message': error_message})
+            #returns list of accounts that match the account ID in OFX
             account = Account.objects.filter(ofx_accountID=statementDetails['account'])
             if len(account) != 1: #If more than one account matches, return error message
-                return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
+                error_message = "No matching account found. Please check account has been added and OFX Account ID is correct."
+                return render(request, 'transactions/ofxupload.html', {'form': form, 'error_message': error_message})
             a = account[0] #Get the account object for matching account
             #Add a new OFX_Upload record for the account
             o = a.ofx_upload_set.create(ofx_file=f,
@@ -44,15 +47,17 @@ def ofxupload(request):
                                         period_end=statementDetails['period_end'])
             all_tx = data.transDetails() # Returns list of dictionaries with transaction level details, or 'error'
             if all_tx == 'error':
-                return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
+                error_message = "An error occured during import. Please check file is in OFX format."
+                return render(request, 'transactions/ofxupload.html', {'form': form, 'error_message': error_message})
             for tx in all_tx: #loop through transactions in dictionary
                 #Check if transaction has already been uploaded previously (e.g in overlapping statement)
                 matchTX = Transaction.objects.filter(ofx_txID=tx['ofx_txID'])
                 if len(matchTX) == 0: #if transaction not already added...
                     #returns list of matching transaction type objects from Transaction_Type table
                     tx_type = Transaction_Type.objects.filter(ofx_type=tx['tx_type'])
-                    if len(tx_type) != 1: #If it matches no or multiple tx types, return error message
-                        return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
+                    if len(tx_type) != 1: #If it matches no tx types, return error message
+                        error_message = "Encountered an unknown transaction type during import."
+                        return render(request, 'transactions/ofxupload.html', {'form': form, 'error_message': error_message})
                     t = tx_type[0] #Get the Transaction_Type object for matching tx type
                     #Creates a new transaction linked to the OFX_Upload
                     o.transaction_set.create(account=a,
@@ -70,19 +75,22 @@ def ofxupload(request):
                 a.balance = latest_tx[0].balance
                 a.save()
             return redirect(reverse('transactions:submission', kwargs={'message_code': 1}))
+        else:
+            return render(request, 'transactions/ofxupload.html', {'form': form,})
     else:
         form = OFX_Form()
         return render(request, 'transactions/ofxupload.html', {'form': form,})
 
 @login_required
 def submission(request, message_code):
+    success_message = ""
+    error_message = ""
     if message_code == '1':
-        message = "OFX file imported successfully"
+        success_message = "OFX file imported successfully"
     elif message_code == '2':
-        message = "WARNING: Error occurred when importing OFX file"
-    elif message_code == '3':
-        message = "Transaction added"
-    return render(request, 'transactions/message.html', {'message': message})
+        success_message = "Transaction added"
+    return render(request, 'transactions/message.html', {'success_message': success_message,
+                                                         'error_message': error_message})
 
 @login_required
 def add_tx(request):
@@ -120,18 +128,13 @@ def add_tx(request):
                 #Calculate account balance
                 a.balance += t.amount
                 a.save()
-            return redirect(reverse('transactions:submission', kwargs={'message_code': 3}))
+            return redirect(reverse('transactions:submission', kwargs={'message_code': 2}))
         else:
             #Check how to return to form populated with information with error message
             return render(request, 'transactions/add_tx.html', {'form': form,})
     else:
         form = TX_Add()
         return render(request, 'transactions/add_tx.html', {'form': form,})
-
-@login_required
-def select_tx(request):
-    form = TX_History()
-    return render(request, 'transactions/select_tx.html', {'form': form,})
 
 @login_required
 def view_tx(request):
@@ -165,4 +168,8 @@ def view_tx(request):
                        'total_change': total_change,
                        }
             return render(request, 'transactions/view_tx.html', context)
-    return redirect(reverse('transactions:select_tx'))
+        else:
+            return render(request, 'transactions/select_tx.html', {'form': form,})
+    else:
+        form = TX_History()
+        return render(request, 'transactions/select_tx.html', {'form': form,})

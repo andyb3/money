@@ -30,14 +30,14 @@ class OFX_Upload(models.Model):
         return self.upload_date
 
 class Transaction_Type(models.Model):
-    ofx_type = models.CharField(max_length=250)
+    ofx_type = models.CharField(max_length=250, unique=True)
     description = models.CharField(max_length=250)
     def __str__(self):
         return self.description
 
 class Transaction(models.Model):
     ofx_upload = models.ForeignKey(OFX_Upload, blank=True, null=True, on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)    
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     tx_type = models.ForeignKey(Transaction_Type, on_delete=models.CASCADE)
     date = models.DateField()
     ofx_txID = models.CharField(max_length=250, null=True, blank=True)

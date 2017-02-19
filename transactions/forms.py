@@ -6,7 +6,11 @@ class OFX_Form(forms.ModelForm):
         model = Uploaded_File
         fields = ('file_location', ) #Uses file_location field from the Uploaded_File model
         labels = {'file_location': 'Choose OFX file'}
-
+    def clean_file_location(self):
+        data = self.cleaned_data['file_location']
+        if data.name[-4:] != ".ofx":
+            raise forms.ValidationError("Only OFX files (.ofx) can be imported")
+        return data
 
 class TX_Add(forms.ModelForm):
     class Meta:
@@ -31,4 +35,4 @@ class TX_History(forms.Form):
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
         if not end_date >= start_date:
-            raise forms.ValidationError("End date cannot be before start date")
+            raise forms.ValidationError({'end_date':"End date cannot be before start date"})

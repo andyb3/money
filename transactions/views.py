@@ -171,7 +171,7 @@ def view_tx(request):
             context['t_types'] = {'POS':0,'DEBIT':0,'DIRECTDEBIT':0,'XFER':0,'OTHER':0}
             context['t_data_all'] = []
             #select_related ensures related objects are cached to prevent repeated database hits
-            t_all = Transaction.objects.select_related('account__bank', 'tx_type').filter(date__gte=start_date, date__lte=end_date, account__in=accounts).order_by('-date', '-pk')
+            t_all = Transaction.objects.select_related('account__bank', 'tx_type').filter(date__gte=start_date, date__lte=end_date, account__in=accounts).order_by('date', 'pk')
             for t in t_all:
 
                 # Create dictionary of transactions for specified time period

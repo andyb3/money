@@ -167,6 +167,37 @@ def view_tx(request):
                        'end_bal': end_bal,
                        'total_change': total_change,
                        }
+            balance = start_bal
+            context['t_types'] = {'POS':0,'DEBIT':0,'DIRECTDEBIT':0,'XFER':0,'OTHER':0}
+            context['t_data_all'] = []
+            #select_related ensures related objects are cached to prevent repeated database hits
+            t_all = Transaction.objects.select_related('account__bank', 'tx_type').filter(date__gte=start_date, date__lte=end_date, account__in=accounts).order_by('-date', '-pk')
+            for t in t_all:
+
+                # Create dictionary of transactions for specified time period
+                t_data = {}
+                t_data["date"] = t.date
+                t_data["bank"] = t.account.bank.bank_name
+                t_data["account"] = t.account.description
+                t_data["description"] = t.description
+                t_data["type"] = t.tx_type.description
+                t_data["amount"] = t.amount
+                balance += t.amount
+                t_data["balance"] = balance
+                context['t_data_all'].append(t_data)
+
+                #Count outgoing transactions, exclude transfers to FlexAccount
+                if t.amount < 0 and not (t.tx_type.id == 10 and (t.description == "070116 31657268" or t.description == "FLEXACCOUNT")):
+                    if t.tx_type.id == 9:
+                        context['t_types']["POS"] += abs(t.amount)
+                    elif t.tx_type.id == 2:
+                        context['t_types']["DEBIT"] += abs(t.amount)
+                    elif t.tx_type.id == 15:
+                        context['t_types']["DIRECTDEBIT"] += abs(t.amount)
+                    elif t.tx_type.id == 10:
+                        context['t_types']["XFER"] += abs(t.amount)
+                    else:
+                        context['t_types']["OTHER"] += abs(t.amount)
             return render(request, 'transactions/view_tx.html', context)
         else:
             return render(request, 'transactions/select_tx.html', {'form': form,})

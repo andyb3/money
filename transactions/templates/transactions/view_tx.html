@@ -75,22 +75,34 @@
         var ctx = document.getElementById("myDoughnutChart");
         var data = {
           labels: [
-            "Apples",
-            "Oranges",
-            "Pears"
+            "Card Payment",
+            "Direct Debit",
+            "Cash Withdrawal",
+            "Transfer",
+            "Other"
           ],
           datasets: [
             {
-              data: [10, 20, 30],
+              data: [
+                {{t_types.POS}},
+                {{t_types.DIRECTDEBIT}},
+                {{t_types.DEBIT}},
+                {{t_types.XFER}},
+                {{t_types.OTHER}}
+              ],
               backgroundColor: [
                 "#FF6384",
                 "#36A2EB",
-                "#FFCE56"
+                "#FFCE56",
+                "#FF6384",
+                "#36A2EB"
               ],
               hoverBackgroundColor: [
                 "#FF6384",
                 "#36A2EB",
-                "#FFCE56"
+                "#FFCE56",
+                "#FF6384",
+                "#36A2EB"
               ]
             }]
         };
@@ -115,12 +127,11 @@
       var data = {
         datasets: [
           {label: 'Total Balance',
-            data: [{x:moment('29/01/2016', 'DD/MM/YYYY'), y:20},
-                  {x:moment('02/02/2017', 'DD/MM/YYYY'), y:30},
-                  {x:moment('02/03/2018', 'DD/MM/YYYY'), y:35},
-                  {x:moment('02/04/2018', 'DD/MM/YYYY'), y:20},
-                  {x:moment('02/05/2019', 'DD/MM/YYYY'), y:30},
-                  {x:moment('29/06/2021', 'DD/MM/YYYY'), y:35},]
+            data: [
+                  {% for t in t_data_all %}
+                    {x:moment('{{t.date}}', 'DD MMM YYYY'), y:{{t.balance}}},
+                  {% endfor %}
+                  ]
         }]
       };
       var options = {

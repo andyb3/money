@@ -34,7 +34,9 @@
       </div>
     </nav>
 
-    <div class="container" style='max-width:800px;margin:0 auto'>
+    <div class="container" style='max-width:1200px;margin:0 auto'>
+      <div class="row" style='display:flex;align-items:center'>
+        <div class="col-md-6">
 
       <!-- Main component for a primary marketing message or call to action -->
 
@@ -60,17 +62,14 @@
         </tr>
         </table>
 
+        </div>
 
-
-    </div> <!-- /container -->
-
-
-        <div class="container" style='max-width:400px;margin:0 auto'>
+      <div class="col-md-6">
 
         <script src="{% static 'transactions/moment.js' %}"></script>
         <script src="{% static 'transactions/Chart.bundle.FIXline16460.js' %}"></script>
 
-        <canvas id="myDoughnutChart" width="400" height="400"></canvas>
+        <canvas id="myDoughnutChart" width="400" height="150"></canvas>
         <script>
         var ctx = document.getElementById("myDoughnutChart");
         var data = {
@@ -108,8 +107,8 @@
         };
         var options = {
           animation: {
-            animateScale: false,
-            animateRotate: false
+            animateScale: true,
+            animateRotate: true
           }
         };
         var myDoughnutChart = new Chart(ctx, {
@@ -118,7 +117,8 @@
           options: options
         });
         </script>
-      </div>
+    </div>
+  </div>
 
       <div class="container" style='max-width:1200px;margin:0 auto'>
       <canvas id="myLineChart" width="400" height="100"></canvas>
@@ -137,7 +137,7 @@
         }]
       };
       var options = {
-        layout: {padding: 30},
+        layout: {padding: 15},
         scales: {
           xAxes: [{
             type: 'time',

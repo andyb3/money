@@ -94,22 +94,22 @@
                 "#FF6384",
                 "#36A2EB",
                 "#FFCE56",
-                "#FF6384",
-                "#36A2EB"
+                "#00ff80",
+                "#bf00ff"
               ],
               hoverBackgroundColor: [
                 "#FF6384",
                 "#36A2EB",
                 "#FFCE56",
-                "#FF6384",
-                "#36A2EB"
+                "#00ff80",
+                "#bf00ff"
               ]
             }]
         };
         var options = {
           animation: {
-            animateScale: true,
-            animateRotate: true
+            animateScale: false,
+            animateRotate: false
           }
         };
         var myDoughnutChart = new Chart(ctx, {
@@ -131,7 +131,9 @@
                   {% for t in t_data_all %}
                     {x:moment('{{t.date}}', 'DD MMM YYYY'), y:{{t.balance}}},
                   {% endfor %}
-                  ]
+                  ],
+            lineTension: 0,
+            pointRadius: 0.5
         }]
       };
       var options = {
@@ -153,5 +155,28 @@
 
       </div>
 
+    <div class="container" style='max-width:1200px;margin:0 auto'>
+        <table class=table table-condensed>
+	        <caption><h3>Transactions</h3></caption>
+	        <tr>
+	          <th>Date</th>
+	          <th>Bank</th>
+	          <th>Account</th>
+	          <th>Description</th>
+	          <th>Amount</th>
+	          <th>Balance</th>
+	        </tr>
+	        {% for t in t_data_all %}
+	        <tr>
+	        	<td>{{t.date}}</td>
+	        	<td>{{t.bank}}</td>
+	        	<td>{{t.account}}</td>
+	        	<td>{{t.description}}</td>
+	        	<td>£{{t.amount}}</td>
+	        	<td>£{{t.balance}}</td>
+	        </tr>
+	        {% endfor %}
+        </table>   	
+    </div>
 
 {% endblock %}

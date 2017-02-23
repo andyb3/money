@@ -180,7 +180,6 @@ def view_tx(request):
                 t_data["bank"] = t.account.bank.bank_name
                 t_data["account"] = t.account.description
                 t_data["description"] = t.description
-                t_data["type"] = t.tx_type.description
                 t_data["amount"] = t.amount
                 balance += t.amount
                 t_data["balance"] = balance

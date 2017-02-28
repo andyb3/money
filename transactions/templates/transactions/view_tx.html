@@ -35,13 +35,15 @@
     </nav>
 
     <div class="container" style='max-width:1200px;margin:0 auto'>
+    <h3 class='text-center text-muted'>Spending Summary</h3>
+    <hr style='border-color:#A9A9A9'/>
       <div class="row" style='display:flex;align-items:center'>
         <div class="col-md-6">
 
       <!-- Main component for a primary marketing message or call to action -->
 
         <table class=table>
-        <caption><h3>Spending Summary</h3></caption>
+
         <tr>
           <td><b>Period start</b></td>
           <td>{{ start_date }}</td>
@@ -107,8 +109,8 @@
         };
         var options = {
           animation: {
-            animateScale: true,
-            animateRotate: true
+            animateScale: false,
+            animateRotate: false
           }
         };
         var myDoughnutChart = new Chart(ctx, {
@@ -133,16 +135,25 @@
                   {% endfor %}
                   ],
             lineTension: 0,
-            pointRadius: 0.5
+            pointRadius: 0.5,
         }]
       };
       var options = {
+        legend: {display: false},
+        animation: {duration: 0},
         layout: {padding: 15},
         scales: {
           xAxes: [{
             type: 'time',
+            time: {minUnit: 'day'},
             position: 'bottom',
             ticks: {padding:100}
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Balance (£)"
+            }
           }]
         }
       };

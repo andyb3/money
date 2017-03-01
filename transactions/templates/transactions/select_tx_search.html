@@ -1,0 +1,138 @@
+{% extends 'transactions/base.html' %}
+
+{% block content %}
+{% load static %}
+{% load widget_tweaks %}
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-left"><img style="max-height:40px;padding-top:5px;padding-right:10px" src = "{% static 'transactions/piggy_bank.png' %}"></a>
+          <a class="navbar-brand" href={% url 'transactions:index' %}>Andy's Money</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href={% url 'transactions:index' %}>Home</a></li>
+            <li class="active"><a href="{% url 'transactions:view_tx' %}">Spending History</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add Transactions <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'transactions:ofxupload' %}">Upload OFX</a></li>
+                <li><a href="{% url 'transactions:add_tx' %}">Manually Add Transaction</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'transactions:logout' %}">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+
+    <div class="container" style="text-align:center">
+
+      <!-- Main component for a primary marketing message or call to action -->
+        <form method="post" class="form-inline" style="display:inline-block">
+          <h3 class='text-muted' style="text-align:left">Search Transactions</h3>
+          {% csrf_token %}
+          <hr style='border-color:#A9A9A9'/>
+          {% if form.non_field_errors %}
+          <div class="alert alert-warning">
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+          <div class="form-group" style="padding-right:10px">
+          <label for="start_date">{% render_field form.start_date.label %}</label>
+          {% render_field form.start_date class="datepicker form-control" %}
+          </div>
+          {% if form.start_date.errors %}
+          <div class="alert alert-warning">
+            {{ form.start_date.errors }}
+          </div>
+          {% endif %}
+          <div class="form-group" style="padding-right:10px">
+          <label for="end_date">{% render_field form.end_date.label %}</label>
+          {% render_field form.end_date class="datepicker form-control" %}
+          </div>
+          {% if form.end_date.errors %}
+          <div class="alert alert-warning">
+            {{ form.end_date.errors }}
+          </div>
+          {% endif %}
+          <div class="form-group" style="padding-right:10px">
+          <label for="search">{% render_field form.search.label %}</label>
+          {% render_field form.search class="form-control" placeholder="e.g. Tesco" %}
+          </div>
+          {% if form.search.errors %}
+          <div class="alert alert-warning">
+            {{ form.search.errors }}
+          </div>
+          {% endif %}
+
+          <input class='btn btn-default' type="submit" value="Search" />
+        </form>
+  </div>
+
+  {% if search_term %}
+   <div class="container">  
+        <table class=table table-condensed>
+        <caption><h3>Results for search '{{search_term}}', {{period_start}} - {{period_end}}</h3></caption>
+          <tr>
+            <th>Date</th>
+            <th>Bank</th>
+            <th>Account</th>
+            <th>Description</th>
+            <th>Amount</th>
+          </tr>
+          {% for t in t_data_all %}
+          <tr>
+            <td>{{t.date}}</td>
+            <td>{{t.bank}}</td>
+            <td>{{t.account}}</td>
+            <td>{{t.description}}</td>
+            <td>£{{t.amount}}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>£{{total_amount}}</td>
+          </tr>
+        </table>    
+    </div>
+
+  {% endif %}
+
+    </div> <!-- /container -->
+
+
+    <script src="{% static 'transactions/jquery-1.12.1.min.js' %}"></script>
+    <script src="{% static 'transactions/jquery-ui-1.12.1.custom/external/jquery/jquery.js' %}"></script>
+    <script src="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        $('.datepicker').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});
+    });
+    </script>
+    <link rel="stylesheet" type= "text/css" href="{% static 'transactions/jquery-ui-1.12.1.custom/jquery-ui.css' %}" />
+
+
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+
+{% endblock %}

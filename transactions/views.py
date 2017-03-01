@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from transactions.ofxImport import ofxData
-from transactions.forms import OFX_Form, TX_History, TX_Add
+from transactions.forms import OFX_Form, TX_History, TX_Add, TX_Search
 from transactions.models import Account, OFX_Upload, Transaction, Transaction_Type
 from decimal import Decimal
 
@@ -203,3 +204,36 @@ def view_tx(request):
     else:
         form = TX_History()
         return render(request, 'transactions/select_tx.html', {'form': form,})
+
+@login_required
+def search_tx (request):
+    if request.method == 'POST':
+        form = TX_Search(request.POST) #Create new instance of form with the posted data
+        if form.is_valid():
+            start_date = form.cleaned_data["start_date"]
+            end_date = form.cleaned_data["end_date"]
+            search_term = form.cleaned_data["search"]
+            context = {'form': form,
+                       'search_term': search_term,
+                       'period_start': start_date,
+                       'period_end': end_date}
+            context['t_data_all'] = []
+            #select_related ensures related objects are cached to prevent repeated database hits
+            t_all = Transaction.objects.select_related('account__bank').filter(date__gte=start_date, date__lte=end_date, description__icontains=search_term).order_by('date', 'pk')
+            for t in t_all:
+                # Create dictionary of transactions for specified time period
+                t_data = {}
+                t_data["date"] = t.date
+                t_data["bank"] = t.account.bank.bank_name
+                t_data["account"] = t.account.description
+                t_data["description"] = t.description
+                t_data["amount"] = t.amount
+                context['t_data_all'].append(t_data)
+            total_amount = Transaction.objects.filter(date__gte=start_date, date__lte=end_date, description__icontains=search_term).aggregate(Sum('amount'))
+            context['total_amount']=total_amount["amount__sum"]
+            return render(request, 'transactions/select_tx_search.html', context)
+        else:
+            return render(request, 'transactions/select_tx_search.html', {'form': form,})
+    else:
+        form = TX_Search()
+        return render(request, 'transactions/select_tx_search.html', {'form': form,})

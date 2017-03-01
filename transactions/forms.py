@@ -36,3 +36,14 @@ class TX_History(forms.Form):
         end_date = cleaned_data.get("end_date")
         if not end_date >= start_date:
             raise forms.ValidationError({'end_date':"End date cannot be before start date"})
+
+class TX_Search(forms.Form):
+    start_date = forms.DateField(label="Period start", widget=forms.TextInput(attrs={'class':'datepicker','autocomplete':'off'}))
+    end_date = forms.DateField(label="Period end", widget=forms.TextInput(attrs={'class':'datepicker','autocomplete':'off'}))
+    search = forms.CharField(label="Search term", strip=True)
+    def clean(self):
+        cleaned_data = super(TX_Search, self).clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+        if not end_date >= start_date:
+            raise forms.ValidationError({'end_date':"End date cannot be before start date"})

@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'ofxupload/$', views.ofxupload, name="ofxupload"),
     url(r'(?P<message_code>[1-2]+)/$', views.submission, name="submission"),
     url(r'view/$', views.view_tx, name="view_tx"),
+    url(r'search/$', views.search_tx, name="search_tx"),
     url(r'transaction/$', views.add_tx, name="add_tx"),
 ]
